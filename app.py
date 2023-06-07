@@ -3,7 +3,7 @@ import cv2
 import torch
 from utils.hubconf import custom
 import numpy as np
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration
 import tempfile
 import time
 from collections import Counter
@@ -99,6 +99,9 @@ if not model_type == 'YOLO Model':
         if options == 'Webcam':
             #cam_options = st.sidebar.selectbox('Webcam Channel',
             #                               ('Select Channel', '0', '1', '2', '3'))
+            RTC_CONFIGURATION = RTCConfiguration(
+                {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+            )
             class VideoTransformer(VideoTransformerBase):
                 def __init__(self):
                     self.model_type = 'YOLOv8'
@@ -130,7 +133,7 @@ if not model_type == 'YOLO Model':
                     return img
         
             #if not cam_options == 'Select Channel':
-            ctx = webrtc_streamer(key="example", video_transformer_factory=VideoTransformer)
+            ctx = webrtc_streamer(key="example", video_transformer_factory=VideoTransformer, rtc_configuration=RTC_CONFIGURATION)
             if ctx.video_transformer:
                 stframe1 = st.empty()
                 stframe2 = st.empty()
