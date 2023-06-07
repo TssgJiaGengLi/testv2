@@ -3,7 +3,7 @@ import cv2
 import torch
 from utils.hubconf import custom
 import numpy as np
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration
+from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration, WebRtcMode
 import tempfile
 import time
 from collections import Counter
@@ -137,7 +137,14 @@ if not model_type == 'YOLO Model':
                     return img
         
             #if not cam_options == 'Select Channel':
-            ctx = webrtc_streamer(key="example", video_transformer_factory=VideoTransformer, rtc_configuration=RTC_CONFIGURATION)
+            ctx = webrtc_streamer(
+                    key="example", 
+                    video_transformer_factory=VideoTransformer, 
+                    mode=WebRtcMode.SENDRECV,
+                    rtc_configuration=RTC_CONFIGURATION,
+                    media_stream_constraints={"video": True, "audio": False},
+                    async_processing=True,
+                    )
             if ctx.video_transformer:
                 stframe1 = st.empty()
                 stframe2 = st.empty()
