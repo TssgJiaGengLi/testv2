@@ -80,6 +80,13 @@ if not model_type == 'YOLO Model':
             color_pick_list.append(color)
 
         # Image
+        RTC_CONFIGURATION = RTCConfiguration(
+            {"iceServers": [
+                {"urls": ["stun:stun1.l.google.com:19302"]},
+                {"urls": ["stun:stun2.l.google.com:19302"]},
+                {"urls": ["turn:openrelay.metered.ca:80"], "username": "openrelayproject", "credential": "openrelayproject"}
+            ]}
+        )
        
         
         # Video
@@ -99,9 +106,6 @@ if not model_type == 'YOLO Model':
         if options == 'Webcam':
             #cam_options = st.sidebar.selectbox('Webcam Channel',
             #                               ('Select Channel', '0', '1', '2', '3'))
-            RTC_CONFIGURATION = RTCConfiguration(
-                {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-            )
             class VideoTransformer(VideoTransformerBase):
                 def __init__(self):
                     self.model_type = 'YOLOv8'
