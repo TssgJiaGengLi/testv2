@@ -3,15 +3,16 @@ import cv2
 import torch
 from utils.hubconf import custom
 import numpy as np
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration, WebRtcMode
+from streamlit_webrtc import WebRtcMode,webrtc_streamer, VideoTransformerBase
 import tempfile
 import time
 from collections import Counter
 import json
 import pandas as pd
 from model_utils import get_yolo, color_picker_fn, get_system_stat
+from trun import get_ice_servers
 # from ultralytics import YOLO
-new_title = '<p style="font-family:sans-serif; color:#e20074; font-size: 40px;">Test</p>'
+new_title = '<p style="font-family:sans-serif; color:#e20074; font-size: 40px;">T-Video Analytics</p>'
 st.markdown(new_title, unsafe_allow_html=True)
 
 p_time = 0
@@ -22,7 +23,7 @@ model_type = st.sidebar.selectbox(
     'Choose YOLO Model', ('YOLO Model', 'YOLOv8', 'YOLOv7')
 )
 
-sample_img = cv2.imread('logo.jpg')
+sample_img = cv2.imread('T-logo.jpg')
 FRAME_WINDOW = st.image(sample_img, channels='BGR')
 cap = None
 
@@ -80,13 +81,6 @@ if not model_type == 'YOLO Model':
             color_pick_list.append(color)
 
         # Image
-        RTC_CONFIGURATION = RTCConfiguration(
-            {"iceServers": [
-                {"urls": ["stun:stun1.l.google.com:19302"]},
-                {"urls": ["stun:stun2.l.google.com:19302"]},
-                {"urls": ["turn:openrelay.metered.ca:80"], "username": "openrelayproject", "credential": "openrelayproject"}
-            ]}
-        )
        
         
         # Video
@@ -138,13 +132,13 @@ if not model_type == 'YOLO Model':
         
             #if not cam_options == 'Select Channel':
             ctx = webrtc_streamer(
-                    key="example", 
-                    video_transformer_factory=VideoTransformer, 
-                    mode=WebRtcMode.SENDRECV,
-                    rtc_configuration=RTC_CONFIGURATION,
-                    media_stream_constraints={"video": True, "audio": False},
-                    async_processing=True,
-                    )
+                key="example", 
+                mode=WebRtcMode.SENDRECV,
+                rtc_configuration={"iceServers": get_ice_servers()},
+                video_transformer_factory=VideoTransformer,
+                media_stream_constraints={"video": True, "audio": False},
+                async_processing=True,
+                )
             if ctx.video_transformer:
                 stframe1 = st.empty()
                 stframe2 = st.empty()
