@@ -23,7 +23,7 @@ model_type = st.sidebar.selectbox(
     'Choose YOLO Model', ('YOLO Model', 'YOLOv8', 'YOLOv7')
 )
 
-sample_img = cv2.imread('T-logo.jpg')
+sample_img = cv2.imread('logo.jpg')
 FRAME_WINDOW = st.image(sample_img, channels='BGR')
 cap = None
 
